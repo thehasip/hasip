@@ -1,0 +1,5 @@
+# do not include tmp files and logs in repository
+log/
+tmp/
+# python files
+*.pyc
