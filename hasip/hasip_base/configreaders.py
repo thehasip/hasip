@@ -1,4 +1,4 @@
-import os, sys, glob, ConfigParser
+import os, sys, glob, re, ConfigParser
 
 # ################################################################################
 #
@@ -46,11 +46,58 @@ class ConfigItemReader(ConfigReader):
   def get_items_dict(self):
     return self.items
 
+  # return a uniq list with all used modules within the items.
+  def get_module_list(self):
+    module_list = []
+
+    for item in self.items:
+      module_list.append(
+        self.items[item][0] #.capitalize()
+      )
+    
+    return list(set(module_list))
+
+
 # ################################################################################
+# ConfigBaseReader reads the configuration file and creats a dictonary out of
+# the configuration. See below example for how to access the values than.
+#
+# Usage:
+#
+# >>> config = ConfigBaseReader()
+# >>> values = config.get_values()
+# >>> print values['services']['start_webserver']
 #
 # ################################################################################
 class ConfigBaseReader(ConfigReader):
-  def __init__(self):
-    pass
+  def __init__(self, conf_dir='config/'):
 
-#print ConfigItemReader().get_items_dict()
+    super(ConfigBaseReader, self).__init__(conf_dir, '.config')
+
+    self.config_options = {}
+    self.cfg.readfp( open(self.files[0]) )
+
+    true_false = re.compile('^([Tt]rue|[Ff]alse)$')   # regular expression:
+                                                      # true|false (with or without capital letter)
+
+    # (1) Get all sections in config file and process each one individually
+    # (2) Create a tmporary dictonary
+    # (3) Get all options within the current section and process each one individually
+    # (4) For each options within the section we add it to the tmporary dictionarry
+    #     if the value is a string with "true" or "false" we evaluate it to get a real 
+    #     boolean value from the string.
+    # (5) The temp directory is than added to the "main" dictionary
+
+    for cfg_section in self.cfg.sections():                           # (1)
+      tmp = {}                                                        # (2)
+      for option in self.cfg.options(cfg_section):                    # (3)
+        opt_val = self.cfg.get(cfg_section, option)
+        if true_false.match( opt_val ):
+          tmp.update({ option: eval( opt_val.capitalize() ) })        # (4)
+        else:
+          tmp.update({ option: opt_val })                             # (4)
+
+      self.config_options.update({cfg_section: tmp})                  # (5)
+
+  def get_values(self):
+    return self.config_options
