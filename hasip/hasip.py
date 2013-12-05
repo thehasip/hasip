@@ -5,6 +5,7 @@ import Queue
 import threading
 
 from modules.cmddemo import Cmddemo
+from hasip_base.configreaders import ConfigItemReader, ConfigBaseReader
 
 class Hasip(object):
   # - load config

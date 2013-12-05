@@ -1,16 +1,9 @@
-[item]
-id        = 1                   // uniq id which is needed identify different items within hasip
-type      = switch              // type of item; depending on the type the item has different functions to use
-module    = "rpi-gpio"          // we can talk to this item by addressing commands to the "rpi-gpio" model.
-                                // this is done this way to use later on multiple modules with one device.
-                                // e.g we can use a "tcp-ip" binding to communicate with a slave device
-                                // which is located somewhere else
-address   = "rpi-gpio-001"      // name we use to address the gpio pin. The module has an internal mapping what
-                                // to do with this name.
-name      = "Garten Pumpe 1"    // human readable name, this text is displayed to the "EndUser"
+[cmd demo element 1]
+module      = cmddemo
+module_id   = 1
+type        = switch
 
-[item asdf    asdf a]
-[item]
-[item]
-[item]
-[item]
+[cmd demo element 2]
+module      = cmddemo
+module_id   = 2
+type        = switch
