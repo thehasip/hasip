@@ -3,3 +3,6 @@ log/
 tmp/
 # python files
 *.pyc
+# ignore vim swp files
+*.swp
+*.swo
