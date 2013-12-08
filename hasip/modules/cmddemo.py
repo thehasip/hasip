@@ -1,14 +1,6 @@
-#from ...hasip_base.switch import Switch
+from hasip.hasip_base.modules import *
 
-
-# @TODO:
-# should be ==>
-#   class Cmddemo(Switch)
-#   class Cmddemo(Switch, Dimmer, ... )
-# ^^ whatever this module should do... (ensures that standard methods are implemented!)
-#
-
-class Cmddemo(object):
+class Cmddemo(Basemodule, Switch):
 
   # ################################################################################
   # initialization of module and optional load of config files
@@ -38,11 +30,11 @@ class Cmddemo(object):
   # ################################################################################
   def worker(self):
     while True:
-      _action = "status"  # this should be gatherd from "working queue"
+      _action = "get_status"  # this should be gatherd from "working queue"
       _port   = 0         # ...
 
       options = {
-        "status"    : self.status,
+        "get_status"    : self.get_status,
         "set_on"    : self.set_on,
         "set_off"   : self.set_off
       }
@@ -60,8 +52,9 @@ class Cmddemo(object):
   # @arguments:  port
   # @return:     -
   # ################################################################################
-  def status(self, port):
-     print "Cmddemo :: status(" + str(port) + ") => " + self.ports[port]['status']
+  def get_status(self, port):
+     #print "Cmddemo :: status(" + str(port) + ") => " + self.ports[port]['status']
+     pass
 
   # ################################################################################
   # sets the port provided by @argument to on
