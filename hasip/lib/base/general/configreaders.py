@@ -52,7 +52,7 @@ class ConfigItemReader(ConfigReader):
 
     for item in self.items:
       module_list.append(
-        self.items[item][0] #.capitalize()
+        self.items[item][0]
       )
     
     return list(set(module_list))

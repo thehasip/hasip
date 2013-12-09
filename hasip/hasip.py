@@ -1,77 +1,75 @@
 #!/usr/bin/env python
 
+# import of standard libs
 import time
 import Queue
 import threading
 
-from modules.cmddemo import Cmddemo
-from hasip_base.configreaders import ConfigItemReader, ConfigBaseReader
+# import of project specific libs
+from lib.base.general import ConfigItemReader, ConfigBaseReader
+import lib.modules
 
 class Hasip(object):
-  # - load config
-  #     |- bindings
-  #     |- items
-  #     |- mappings ( where is which item available )
-  # - start: "hassip_messaging_bus"
-  # - start: "scheduled_tasker"
-  # - init logging (including level; and provide to all instances)
-  # - command line args; demonize process; 
-  def __init__(object):
-    print "Main::__init__()"
 
-  #
-  # "run" is the main thread.
-  # here we start all background threads for our modules:
-  # => Where do we know which modules to load?
-  # => Config Files (items)
-  # Bellow is an example for static loading of the CMDModule
+  def __init__(self):
+
+    self.config = ConfigBaseReader()
+    self.items  = ConfigItemReader()
+
+    self.global_queue = Queue.Queue()
+
+    # dynamically creation of communication queues and instances of all used
+    # modules. Afterwards a worker of each module is started in background and
+    # is waiting for jobs on the incomming queue.
+    #
+    # (1) create a temp dictionary
+    # (2) add a module specific communication queue
+    # (3) capitalize & create instance for used module
+    # (4) as params we give: "global_queue" and the previously created queue
+    # (5) start "worker" of each module in background
+    #
+    self.modules = {}
+    for m in self.items.get_module_list():
+      self.modules[m] = {}                                      # (1)
+      self.modules[m]["instance_queue"] = Queue.Queue()         # (2)
+      self.modules[m]["instance_object"] = eval(
+        "lib.modules." + m.capitalize()                         # (3)
+      ) (self.modules[m]["instance_queue"], self.global_queue)  # (4)
+
+      t = threading.Thread(                                     # (5)
+        target = self.modules[m]["instance_object"].worker
+      )
+      t.daemon = True
+      t.start()
+
+  # If there are new jobs in the global_queue a new message is generated and
+  # sent to the instance queue
   def run(self):
-    print "Main::run()"
-    job_number = 0
+    while True:
+      if not self.global_queue.empty():
+        # (1) get last job from global_queue
+        # (2) create new message for addressed module
+        # (3) get addresed queue object from modules dictonary
+        # (4) put instance_queue_element which was generated before (2) to the
+        #     instance_queue of module
 
+        global_queue_element = self.global_queue.get()                              # (1)
 
-    # loading all modules which are used in the config files
-    # @TODO:
-    #   * load each module which is mentioned within the config file (see: items config file) (idea: loop?)
-    #   * create one queue for each model. name sugestion like: "$modelname_queue"
-    #   * start thread for each module and provide two queues:
-    #       - first queue:    Communication from MAIN   => to => MODULE. 
-    #       - second queue:   Communication from MODULE => to => MAIN.    (can be the same for all modules, this queue is processed HERE) 
+        instance_queue_element = {                                                  # (2)
+          'module_from':  global_queue_element.get('module_from'),
+          'module_rcpt':  global_queue_element.get('module_rcpt'),
+          'module_id':    global_queue_element.get('module_id'),
+          'cmd':          global_queue_element.get('cmd'),
+          'opt_args':     global_queue_element.get('opt_args')
+        }
 
+        module_rcpt = instance_queue_element.get('module_rcpt')                     # (3)
 
-    # Example with "cmddemo"
+        self.modules[ module_rcpt ]["instance_queue"].put( instance_queue_element ) # (4)
 
-    # init queues
-    back_queue    = Queue.Queue()
-    cmddemo_queue = Queue.Queue()
+    # small break
+    time.sleep(0.1)
 
-    # create object
-    cmddemo = Cmddemo(cmddemo_queue, back_queue)
-
-    # start "module" as thread in background
-    t = threading.Thread(target=cmddemo.worker)
-    t.daemon = True
-    t.start()
-
-    while 1:
-      print "Main::run() # in loop now!"
-
-      # So what are we doing here?
-      #
-      # - Checking "back_queue" for new jobs within this method.
-      #   this is mainly shifting arround answers we get from threads to queues of other threads
-      #
-      #
-
-      #if q.empty(): # wenn leer schicken wir mal ein paar jobs rein. :)
-      #  print "Main::run() # queue is empty!"
-      #  for i in range(0,3): # adding 4 jobs to working queue
-      #    job_number += 1
-      #    print "Main::run() # adding job to queue, no.: " + str(job_number)
-      #    time.sleep(0.1)
-      #    q.put(job_number)
-
-      time.sleep(3)
 
 #
 # This starts the hole stuff ;)

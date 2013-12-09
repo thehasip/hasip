@@ -1,18 +1,18 @@
-from hasip.hasip_base.modules import *
+from lib.base.modules import *
 
 class Cmddemo(Basemodule, Switch):
 
   # ################################################################################
   # initialization of module and optional load of config files
   # ################################################################################
-  def __init__(self, working_queue, back_queue):
+  def __init__(self, instance_queue, global_queue):
     #
     # "cmddemo|port|command or action"
     #
-    self.queue_identifier = 'cmddemo'   # this is the 'module address'  
-    self.working_queue = working_queue  # worker queue to receive jobs 
-    self.back_queue = back_queue        # queue to communicate back to main thread
-    self.ports = [                      # internal port names
+    self.queue_identifier = 'cmddemo'     # this is the 'module address'  
+    self.instance_queue = instance_queue  # worker queue to receive jobs 
+    self.global_queue = global_queue      # queue to communicate back to main thread
+    self.ports = [                        # internal port names
       { 
         'id'      : 0,
         'type'    : 'switch',
@@ -30,15 +30,18 @@ class Cmddemo(Basemodule, Switch):
   # ################################################################################
   def worker(self):
     while True:
-      _action = "get_status"  # this should be gatherd from "working queue"
-      _port   = 0         # ...
+      if not self.instance_queue.empty():
+        instance_queue_element = self.instance_queue.get()
 
-      options = {
-        "get_status"    : self.get_status,
-        "set_on"    : self.set_on,
-        "set_off"   : self.set_off
-      }
-      options[_action](_port)
+        _action = instance_queue_element.get("cmd")
+        _port   = instance_queue_element.get("module_id")
+
+        options = {
+          "get_status"    : self.get_status,
+          "set_on"    : self.set_on,
+          "set_off"   : self.set_off
+        }
+        options[_action](_port)
 
   # ################################################################################
   #
@@ -81,8 +84,10 @@ class Cmddemo(Basemodule, Switch):
 #
 # main for testing
 #
-#if __name__ == '__main__':
-#  h = Cmddemo("queue_Object", "back_queue")
-#  h.set_on(0)
-#  h.status(0)
-#  h.worker()
+if __name__ == '__main__':
+  import Queue
+  q = Queue.Queue()
+  h = Cmddemo(q,q)
+  h.set_on(0)
+  h.get_status(0)
+  h.worker()
