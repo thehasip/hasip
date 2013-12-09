@@ -12,7 +12,7 @@ On the ```global_queue``` is used as a communication channel back to the main th
 
 On the following chart you can see the concept behind this system:
 
-![queue chart](queue.chart.png)
+![queue chart](raw/master/docs/queue.chart.png)
 
 
 Protocoll
@@ -23,16 +23,18 @@ The communication between the different modules is managed by putting a dictonar
 A single message has at least the following keys in the message dictonary:
 
     queue_msg = {
-        'module':       (String,lowercase)
-        'module_id':    (Integer)
-        'cmd':          (String)
+        'module_from':  (String,lowercase),
+        'module_rcpt':  (String,lowercase),
+        'module_id':    (Integer),
+        'cmd':          (String),
         'opt_args':     (String, Dict, ... )
     }
 
 Here is an example message to get the **status** of port **1** on the **cmddemo** module:
 
     queue_msg = {
-        'module':       'cmddemo',
+        'module_from':  '',
+        'module_rcpt':  'cmddemo',
         'module_id':    1, 
         'cmd':          'status',
         'opt_args':     ''
