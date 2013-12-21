@@ -29,15 +29,15 @@ class Hasip(object):
     # (5) start "worker" of each module in background
     #
     self.modules = {}
-    for m in self.items.get_module_list():
-      self.modules[m] = {}                                      # (1)
-      self.modules[m]["instance_queue"] = Queue.Queue()         # (2)
-      self.modules[m]["instance_object"] = eval(
-        "lib.modules." + m.capitalize()                         # (3)
-      ) (self.modules[m]["instance_queue"], self.global_queue)  # (4)
+    for module_name in self.items.get_module_list():
+      self.modules[module_name] = {}                                      # (1)
+      self.modules[module_name]["instance_queue"] = Queue.Queue()         # (2)
+      self.modules[module_name]["instance_object"] = eval(
+        "lib.modules." + module_name.capitalize()                         # (3)
+      ) (self.modules[module_name]["instance_queue"], self.global_queue)  # (4)
 
-      t = threading.Thread(                                     # (5)
-        target = self.modules[m]["instance_object"].worker
+      t = threading.Thread(                                               # (5)
+        target = self.modules[module_name]["instance_object"].worker
       )
       t.daemon = True
       t.start()
@@ -58,7 +58,7 @@ class Hasip(object):
         instance_queue_element = {                                                  # (2)
           'module_from':  global_queue_element.get('module_from'),
           'module_rcpt':  global_queue_element.get('module_rcpt'),
-          'module_id':    global_queue_element.get('module_id'),
+          'module_addr':  global_queue_element.get('module_addr'),
           'cmd':          global_queue_element.get('cmd'),
           'opt_args':     global_queue_element.get('opt_args')
         }

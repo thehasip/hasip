@@ -36,9 +36,9 @@ class ConfigItemReader(ConfigReader):
         self.items.update(
           {
             cfg_section: [
-              self.cfg.get(cfg_section, "module"),       # module
-              self.cfg.getint(cfg_section, "module_id"), # module_id
-              self.cfg.get(cfg_section, "type")          # type
+              self.cfg.get(cfg_section, "module_name"),     # module
+              self.cfg.getint(cfg_section, "module_addr"),  # module_id
+              self.cfg.get(cfg_section, "type")             # type
             ]
           }
         )

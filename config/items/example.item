@@ -1,9 +1,9 @@
 [cmd demo element 1]
-module      = cmddemo
-module_id   = 1
+module_name = cmddemo
+module_addr = 1
 type        = switch
 
 [cmd demo element 2]
-module      = cmddemo
-module_id   = 2
+module_name = cmddemo
+module_addr = 2
 type        = switch
