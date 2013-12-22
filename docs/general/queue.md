@@ -13,7 +13,7 @@ When a module is initialized both queue objects where passed as reference.
 
 On the following chart you can see the concept behind this system:
 
-![queue chart](docs/static_files/queue.chart.png)
+![queue chart](../raw/master/docs/static_files/queue.chart.png)
 
 Protocol
 --------
