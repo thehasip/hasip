@@ -20,8 +20,7 @@ class Hasip(object):
 
     # Creating base logger that catches all log files from modules with
     # Paramters from the config file main section provided by the Config Base Reader
-    self.log = Log( config['main']['logfile'], config['main']['console_log_lvl'],
-      config['main']['logfile_log_lvl'])
+    self.log = Log( self.config['main']['logfile'], self.config['main']['console_log_lvl'], self.config['main']['logfile_log_lvl'] )
 
     # creating logger for main module
     # creating log message with self.logger.logtype('Message')
