@@ -4,19 +4,28 @@
 import time
 import Queue
 import threading
+import logging
 
 # import of project specific libs
-from lib.base.general import ConfigItemReader, ConfigBaseReader
+from lib.base.general import ConfigItemReader, ConfigBaseReader, Log
 import lib.modules
 
 class Hasip(object):
 
   def __init__(self):
 
-    self.config = ConfigBaseReader()
+    self.config = ConfigBaseReader().get_values()
     self.items  = ConfigItemReader()
-
     self.global_queue = Queue.Queue()
+
+    # Creating base logger that catches all log files from modules with
+    # Paramters from the config file main section provided by the Config Base Reader
+    self.log = Log( config['main']['logfile'], config['main']['console_log_lvl'],
+      config['main']['logfile_log_lvl'])
+
+    # creating logger for main module
+    # creating log message with self.logger.logtype('Message')
+    self.logger = logging.getLogger('Hasip.main')
 
     # dynamically creation of communication queues and instances of all used
     # modules. Afterwards a worker of each module is started in background and
@@ -39,6 +48,8 @@ class Hasip(object):
       t = threading.Thread(                                               # (5)
         target = self.modules[module_name]["instance_object"].worker
       )
+
+      self.logger.debug('Loaded Module %s', str(module_name))
       t.daemon = True
       t.start()
 
