@@ -6,3 +6,5 @@ tmp/
 # ignore vim swp files
 *.swp
 *.swo
+*~
+
