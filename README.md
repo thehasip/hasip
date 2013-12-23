@@ -25,6 +25,8 @@ git clone git@git.morgenthaler.at:YOUR_USERNAME/hasip-base.git hasip-base
 cd hasip-base
 # Adding the upstream to fetch the newest code
 git remote add upstream git@git.morgenthaler.at:fh_prj_ws1314/hasip-base.git
+# Get the latest files
+git pull origin master
 ```
 
 * You now have successful set up your initial project.
