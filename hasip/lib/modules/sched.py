@@ -22,7 +22,6 @@ class Sched():
     self.ports = [                        # internal port names
       { 
         'id'      : 0,
-        'type'    : 'sched',
         'status'  : 'on'
       }, { 
         'id'      : 1,
