@@ -32,7 +32,7 @@ git remote add upstream git@git.morgenthaler.at:fh_prj_ws1314/hasip-base.git
 
 ```
 git fetch upstream  # get the latest refs from upstream project
-git pull origin master # get the latest files
+git pull upstream master # get the latest code from upstream
 git checkout -b YOUR_BRANCH_NAME # create a branch for the feature/bug/whatever you are willing to work on
 <start hacking>
 git push origin YOUR_BRANCH_NAME
