@@ -75,7 +75,7 @@ class Hasip(object):
         }
 
         module_rcpt = instance_queue_element.get('module_rcpt')                     # (3)
-
+        self.logger.debug("Message from " + str(global_queue_element.get('module_from')) + " to " + str(global_queue_element.get('module_rcpt')) + " transmitted")
         self.modules[ module_rcpt ]["instance_queue"].put( instance_queue_element ) # (4)
 
     # small break
