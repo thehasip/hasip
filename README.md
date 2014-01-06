@@ -25,15 +25,14 @@ git clone git@git.morgenthaler.at:YOUR_USERNAME/hasip-base.git hasip-base
 cd hasip-base
 # Adding the upstream to fetch the newest code
 git remote add upstream git@git.morgenthaler.at:fh_prj_ws1314/hasip-base.git
-# Get the latest files
-git pull origin master
 ```
 
 * You now have successful set up your initial project.
 * To start coding proceed as described bellow
 
 ```
-git fetch upstream  # get the latest upstream project code
+git fetch upstream  # get the latest refs from upstream project
+git pull origin master # get the latest files
 git checkout -b YOUR_BRANCH_NAME # create a branch for the feature/bug/whatever you are willing to work on
 <start hacking>
 git push origin YOUR_BRANCH_NAME
