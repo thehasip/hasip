@@ -30,8 +30,8 @@ class Cmddemo(Basemodule, Switch):
   # ################################################################################
   def worker(self):
     while True:
-      if not self.instance_queue.empty():
-        instance_queue_element = self.instance_queue.get()
+ 
+        instance_queue_element = self.instance_queue.get(True)
 
         _action = instance_queue_element.get("cmd")
         _port   = instance_queue_element.get("module_id")
