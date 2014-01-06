@@ -7,3 +7,8 @@ type        = switch
 module_name = cmddemo
 module_addr = 2
 type        = switch
+
+[Pumpe 1]
+module_name = gpio
+module_addr = 0
+type        = switch
