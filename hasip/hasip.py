@@ -56,14 +56,14 @@ class Hasip(object):
   # sent to the instance queue
   def run(self):
     while True:
-      if not self.global_queue.empty():
+
         # (1) get last job from global_queue
         # (2) create new message for addressed module
         # (3) get addresed queue object from modules dictonary
         # (4) put instance_queue_element which was generated before (2) to the
         #     instance_queue of module
 
-        global_queue_element = self.global_queue.get()                              # (1)
+        global_queue_element = self.global_queue.get(True)                              # (1)
 
         instance_queue_element = {                                                  # (2)
           'module_from':  global_queue_element.get('module_from'),
@@ -77,8 +77,6 @@ class Hasip(object):
 
         self.modules[ module_rcpt ]["instance_queue"].put( instance_queue_element ) # (4)
 
-    # small break
-    time.sleep(0.1)
 
 
 #
