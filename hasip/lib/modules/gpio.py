@@ -1,6 +1,7 @@
 from lib.base.modules import *
-import RPi.GPIO
+#import RPi.GPIO
 import time
+import logging
 
 class Gpio(Basemodule, Switch):
 
@@ -9,10 +10,13 @@ class Gpio(Basemodule, Switch):
   # ################################################################################
   def __init__(self, instance_queue, global_queue):
     #
-    # "gpio|port|command or action"
+    # uncomment block below on a pi as it only works there. Otherwise you will get errors
     #
     #self.GPIO = RPi.GPIO
+    #self.GPIO.setwarnings(False)
     #self.GPIO.setmode(self.GPIO.BOARD)
+
+    self.logger = logging.getLogger('Hasip.gpio')
     self.queue_identifier = 'gpio'       # this is the 'module address'  
     self.instance_queue = instance_queue  # worker queue to receive jobs 
     self.global_queue = global_queue      # queue to communicate back to main thread
@@ -37,6 +41,71 @@ class Gpio(Basemodule, Switch):
         'status'  : 'off',
         'pin'     : 8,
         'mode'    : 'out'
+      }, {
+        'id'      : 4,
+        'status'  : 'off',
+        'pin'     : 10,
+        'mode'    : 'out'
+      },  {
+        'id'      : 5,
+        'status'  : 'off',
+        'pin'     : 11,
+        'mode'    : 'out'
+      }, {
+        'id'      : 6,
+        'status'  : 'off',
+        'pin'     : 12,
+        'mode'    : 'out'
+      }, {
+        'id'      : 7,
+        'status'  : 'off',
+        'pin'     : 13,
+        'mode'    : 'out'
+      }, {
+        'id'      : 8,
+        'status'  : 'off',
+        'pin'     : 15,
+        'mode'    : 'out'
+      }, {
+        'id'      : 9,
+        'status'  : 'off',
+        'pin'     : 16,
+        'mode'    : 'out'
+      }, {
+        'id'      : 10,
+        'status'  : 'off',
+        'pin'     : 18,
+        'mode'    : 'out'
+      }, {
+        'id'      : 11,
+        'status'  : 'off',
+        'pin'     : 19,
+        'mode'    : 'out'
+      }, {
+        'id'      : 12,
+        'status'  : 'off',
+        'pin'     : 21,
+        'mode'    : 'out'
+      }, {
+        'id'      : 13,
+        'status'  : 'off',
+        'pin'     : 22,
+        'mode'    : 'out'
+      }, {
+        'id'      : 14,
+        'status'  : 'off',
+        'pin'     : 23,
+        'mode'    : 'out'
+      }, {
+        'id'      : 15,
+        'status'  : 'off',
+        'pin'     : 24,
+        'mode'    : 'out'
+      }, {
+        'id'      : 16,
+        'status'  : 'off',
+        'pin'     : 26,
+        'mode'    : 'out'
       }, {} ] # defining internal ports here (...)
 
 
@@ -46,18 +115,19 @@ class Gpio(Basemodule, Switch):
   # ################################################################################
   def worker(self):
     while True:
-      if not self.instance_queue.empty():
-        instance_queue_element = self.instance_queue.get()
+
+        instance_queue_element = self.instance_queue.get(True)
 
         _action = instance_queue_element.get("cmd")
         _port   = instance_queue_element.get("module_id")
+        _sender = instance_queue_element.get("module_from") 
 
         options = {
           "get_status"    : self.get_status,
           "set_on"    : self.set_on,
           "set_off"   : self.set_off
         }
-        options[_action](_port)
+        options[_action](_port,_sender)
 
   # ################################################################################
   #
@@ -66,49 +136,60 @@ class Gpio(Basemodule, Switch):
   # ################################################################################
 
   # ################################################################################
-  # shows status of port provided by argument
-  #e
-  # @arguments:  port
+  # shows status of port provided by argument and replies with a queue message
+  # to the requesting module
+  # @arguments:  port, sender
   # @return:     -
   # ################################################################################
-  def get_status(self, port):
-     print "GPIO :: status(" + str(port) + ") => " + self.ports[port]['status']
-     pass
+  def get_status(self, port, sender):
+    args=("GPIO Port (" + str(port) +") set to " + str(self.ports[port]['status']))
+    queue_msg = {
+        'module_from':  self.queue_identifier,
+        'module_rcpt':  sender,
+        'module_addr':    0,
+        'cmd':          'reply',
+        'opt_args':     args
+    }
+    self.global_queue.put(queue_msg)
+    self.logger.debug(args)
 
   # ################################################################################
   # sets the port provided by @argument to on
   #
-  # @arguments:  port
+  # @arguments:  port, sender
   # @return:     -
   # ################################################################################
-  def set_on(self, port):
-    self.ports[port]['status'] = 'on'
+  def set_on(self, port, sender):
+    
     if self.ports[port]['mode'] == 'out':
-#      self.GPIO.setup(self.ports[port]['pin'], self.GPIO.OUT)
+#     self.GPIO.setup(self.ports[port]['pin'], self.GPIO.OUT)
 #     self.GPIO.output(self.ports[port]['pin'], self.GPIO.HIGH)
-      print 'Hello'
+      pass
     if self.ports[port]['mode'] == 'in':
 #      self.GPIO.setup(self.ports[port]['pin'], self.GPIO.IN)
-       print 'Hello'
-    print "GPIO :: set_on(" + str(port) + ")"
+#      self.GPIO.setup(self.ports[port]['pin'], self.GPIO.HIGH)
+      pass
+    self.logger.debug("GPIO Port(" + str(port) + ") set to on")
+    self.ports[port]['status'] = 'on'
 
   # ################################################################################
   # sets the port provided by @agrument to off
   #
-  # @arguments:  port
+  # @arguments:  port, sender
   # @return:     -
   # ################################################################################
-  def set_off(self, port):
-    self.ports[port]['status'] = 'off'
-    if self.ports[port]['mode'] == 'out':
- #     self.GPIO.setup(self.ports[port]['pin'], self.GPIO.OUT)
- #     self.GPIO.output(self.ports[port]['pin'], self.GPIO.LOW)
-      print 'Hello'
-    if self.ports[port]['mode'] == 'in':
- #     self.GPIO.setup(self.ports[port]['pin'], self.GPIO.IN)
-      print 'Hello'
-    print "GPIO :: set_off(" + str(port) + ")"
+  def set_off(self, port, sender):
 
+    if self.ports[port]['mode'] == 'out':
+ #    self.GPIO.setup(self.ports[port]['pin'], self.GPIO.OUT)
+ #    self.GPIO.output(self.ports[port]['pin'], self.GPIO.LOW)
+      pass
+    if self.ports[port]['mode'] == 'in':
+ #    self.GPIO.setup(self.ports[port]['pin'], self.GPIO.IN)
+ #    self.GPIO.setup(self.ports[port]['pin'], self.GPIO.LOW)
+      pass
+    self.logger.debug("GPIO Port(" + str(port) + ") set to off")
+    self.ports[port]['status'] = 'off'
 
 
 #
