@@ -33,8 +33,8 @@ The rest module has no ports and no private methods as the only thing it does is
 e.g.: the answer of the GPIO module on port 3 need to have "gpio3" in the module_from part of the message. See the gpio module for further details.
 
 The target modules can be controlled by using this URL once the main is started.
-http://localhost/module/<module>/<action>
-whereby <module> is the name used in the config item file and <action>
+http://localhost/module/module/action
+whereby "module" is the name used in the config item file and "action"
 one of the three actions mentioned above.
 e.g.: http://localhost/module/Pumpe1/set_on
 
