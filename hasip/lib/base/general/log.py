@@ -32,6 +32,7 @@ class Log():
     self.logger.addHandler(self.chandler)
 
     self.logger.debug('Logger initialized')
+
     
 ####################################
 #Block for testing log messages

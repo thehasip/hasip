@@ -22,3 +22,8 @@ type        = switch
 module_name = gpio
 module_addr = 1
 type        = switch
+
+[Scheduler]
+module_name = sched
+module_addr = 0
+type        = switch
