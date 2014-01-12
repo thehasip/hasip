@@ -66,17 +66,16 @@ class Sched(Basemodule):
 
   def worker(self):
     while True:
-      if not self.instance_queue.empty():
-        instance_queue_element = self.instance_queue.get()
+      instance_queue_element = self.instance_queue.get(True)
 
-        _action = instance_queue_element.get("cmd")
-        _opt_args   = instance_queue_element.get("opt_args")
+      _action = instance_queue_element.get("cmd")
+      _opt_args   = instance_queue_element.get("opt_args")
 
-        options = {
-          "create"   : self.create,
-          "delete"  : self.delete
-        }
-        options[_action](_opt_args)
+      options = {
+        "create"   : self.create,
+        "delete"  : self.delete
+      }
+      options[_action](_opt_args)
 
   # ################################################################################
   #
