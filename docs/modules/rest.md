@@ -10,7 +10,7 @@ The module comes with single thread webserver that can be configured
 in the rest section of the base config file. 
 
 ```rest_service_ip``` specifies the ip the service should run on. You can also use localhost instead of the ip address. But then it only works locally ;)
-```rest_service_port``` specifies the port the rest service should run on. Default should be 80.
+```rest_service_port``` specifies the port the rest service should run on. Default should be 80. !!! Note !!! that the program needs administrativr permissions to run if you choose a port lower than 1024.
 ```debug``` Don know the exact impact. But should stay on False.
 
 To run the module the ```bottle``` library needs to be installed first.
