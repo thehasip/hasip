@@ -76,7 +76,7 @@ class Cul(Basemodule):
 #      self.sio.write(unicode(data+'\n'))   # write the command + address + escape sequence to buffer
 #      self.sio.flush()                     # get the data out *now*
 #      buffer = self.sio.readline()         # catching answer from cul module if available. Not used atm.
-      self.ports[port]['status']='on'       # set internal port status
+      self.ports[port]['status']='off'       # set internal port status
       self.logger.debug('Sent message ' + data + ' to CUL')
     else:
       self.logger.error('Port "'+ str(port) + '" doesn\'t exist!')
