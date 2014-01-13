@@ -27,3 +27,8 @@ type        = switch
 module_name = sched
 module_addr = 0
 type        = switch
+
+[Lampe1]
+module_name = cul
+module_addr = 0
+type        = switch

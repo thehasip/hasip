@@ -50,9 +50,14 @@ class Rest(Basemodule):
         }                                                   # #################################################################
         self.global_queue.put(msg)                          # sending message to global queue
         if action == 'get_status':                          # checking if requested action was "get_status"
+          esc = 0
+          self.logger.debug("Waiting for module answer")
           while not (rcpt + str(mid) in self.reply_cache.keys()): # waiting until target module answer appears in worker queue
             time.sleep(0.05)                               # small break
-            self.logger.debug("Waiting for module answer")  #
+            esc = esc+1
+            if esc == 20:
+              self.logger.error('No answer from module ' + str(rcpt) + ' received!')
+              return 'Error: No status from module ' + str(module) + ' received!'
           self.logger.debug("Module answer received")       #
           val = self.reply_cache[rcpt + str(mid)]           # storing answer from target
           del self.reply_cache[rcpt + str(mid)]             # removing answer from reply_cache

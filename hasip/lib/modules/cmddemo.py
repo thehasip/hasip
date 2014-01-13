@@ -34,7 +34,7 @@ class Cmddemo(Basemodule, Switch):
         instance_queue_element = self.instance_queue.get(True)
 
         _action = instance_queue_element.get("cmd")
-        _port   = instance_queue_element.get("module_id")
+        _port   = instance_queue_element.get("module_addr")
 
         options = {
           "get_status"    : self.get_status,
