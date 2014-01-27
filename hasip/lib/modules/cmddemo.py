@@ -30,18 +30,20 @@ class Cmddemo(Basemodule, Switch):
   # ################################################################################
   def worker(self):
     while True:
+      instance_queue_element = self.instance_queue.get(True)
 
-        instance_queue_element = self.instance_queue.get(True)
+      _senderport = instance_queue_element.get("module_from_port")
+      _sender	  = instance_queue_element.get("module_from")
+      _port       = instance_queue_element.get("module_addr")
+      _action     = instance_queue_element.get("cmd")
+      _optargs    = instance_queue_element.get("opt_args")
 
-        _action = instance_queue_element.get("cmd")
-        _port   = instance_queue_element.get("module_addr")
-
-        options = {
-          "get_status"    : self.get_status,
-          "set_on"    : self.set_on,
-          "set_off"   : self.set_off
-        }
-        options[_action](_port)
+      options = {
+        "get_status"    : self.get_status,
+        "set_on"        : self.set_on,
+        "set_off"       : self.set_off
+      }
+      options[_action](_sender, _senderport, _port, _optargs)
 
   # ################################################################################
   #
@@ -55,7 +57,7 @@ class Cmddemo(Basemodule, Switch):
   # @arguments:  port
   # @return:     -
   # ################################################################################
-  def get_status(self, port):
+  def get_status(self, sender, senderport, port, optargs):
      #print "Cmddemo :: status(" + str(port) + ") => " + self.ports[port]['status']
      pass
 
@@ -65,7 +67,7 @@ class Cmddemo(Basemodule, Switch):
   # @arguments:  port
   # @return:     -
   # ################################################################################
-  def set_on(self, port):
+  def set_on(self, sender, senderport, port, optargs):
     self.ports[port]['status'] = 'on'
     print "Cmddemo :: set_on(" + str(port) + ")"
 
@@ -75,19 +77,8 @@ class Cmddemo(Basemodule, Switch):
   # @arguments:  port
   # @return:     -
   # ################################################################################
-  def set_off(self, port):
+  def set_off(self, sender, senderport, port, optargs):
     self.ports[port]['status'] = 'on'
     print "Cmddemo :: set_off(" + str(port) + ")"
 
 
-
-#
-# main for testing
-#
-if __name__ == '__main__':
-  import Queue
-  q = Queue.Queue()
-  h = Cmddemo(q,q)
-  h.set_on(0)
-  h.get_status(0)
-  h.worker()

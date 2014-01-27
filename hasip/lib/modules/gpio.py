@@ -116,9 +116,12 @@ class Gpio(Basemodule, Switch):
   def worker(self):
     while True:
       instance_queue_element = self.instance_queue.get(True)
-      _action = instance_queue_element.get("cmd")
-      _port   = instance_queue_element.get("module_addr")
-      _sender = instance_queue_element.get("module_from") 
+
+      _senderport = instance_queue_element.get("module_from_port")
+      _sender	     = instance_queue_element.get("module_from")
+      _port        = instance_queue_element.get("module_addr")
+      _action      = instance_queue_element.get("cmd")
+      _optargs    = instance_queue_element.get("opt_args")
 
       options = {
         "get_status"    : self.get_status,
@@ -126,7 +129,7 @@ class Gpio(Basemodule, Switch):
         "set_off"   : self.set_off
       }
         
-      options[_action](_port,_sender)
+      options[_action](_sender, _senderport, _port, _optargs)
 
   # ################################################################################
   #
@@ -140,12 +143,13 @@ class Gpio(Basemodule, Switch):
   # @arguments:  port, sender
   # @return:     -
   # ################################################################################
-  def get_status(self, port, sender):
+  def get_status(self, sender, senderport, port, optargs):
     args=str(self.ports[port]['status'])
     queue_msg = {
-        'module_from':  self.queue_identifier + str(port),
+        'module_from_port':  str(port),
+        'module_from':  self.queue_identifier,
         'module_rcpt':  sender,
-        'module_addr':    0,
+        'module_addr':  senderport,
         'cmd':          'reply',
         'opt_args':     args
     }
@@ -158,7 +162,7 @@ class Gpio(Basemodule, Switch):
   # @arguments:  port, sender
   # @return:     -
   # ################################################################################
-  def set_on(self, port, sender):
+  def set_on(self, sender, senderport, port, optargs):
     
     if self.ports[port]['mode'] == 'out':
       #self.GPIO.setup(self.ports[port]['pin'], self.GPIO.OUT)
@@ -178,7 +182,7 @@ class Gpio(Basemodule, Switch):
   # @arguments:  port, sender
   # @return:     -
   # ################################################################################
-  def set_off(self, port, sender):
+  def set_off(self, sender, senderport, port, optargs):
 
     if self.ports[port]['mode'] == 'out':
       #self.GPIO.setup(self.ports[port]['pin'], self.GPIO.OUT)
