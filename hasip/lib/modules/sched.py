@@ -1,12 +1,13 @@
 from lib.base.modules import *
 import threading
 import time, os
-#from apscheduler.scheduler import Scheduler
+from apscheduler.scheduler import Scheduler
 #from apscheduler.jobstores.shelve_store import ShelveJobStore
 import logging
-from lib.base.general import ConfigBaseReader
+from lib.base.general import ConfigBaseReader, ConfigItemReader
 
-
+def test(asd):
+  print asd
 
 class Sched(Basemodule):
 
@@ -21,40 +22,38 @@ class Sched(Basemodule):
     self.path = os.path.join(os.path.join( os.getcwd() + "/tmp/dbfile"))
     self.logger = logging.getLogger('Hasip.sched')
     self.logger.debug(self.path)
-    #self.sched = Scheduler()
-    #self.sched.add_jobstore(ShelveJobStore(self.path), 'default')
-    
+    self.sched = Scheduler()
+    self.items  = ConfigItemReader()
+    self.mod_list = self.items.get_items_dict()     # getting module list from item file
     self.queue_identifier = 'sched'       # this is the 'module address'  
     self.instance_queue = instance_queue  # worker queue to receive jobs 
     self.global_queue = global_queue      # queue to communicate back to main thread
 
+    self.sched.start()
 
+    self.jobs  = ConfigBaseReader('config/jobs/').get_values()
+    sched_params={}
+    for section in self.jobs:
+      for item in self.jobs[section]:
+        if self.jobs[section][item] != '':
+          sched_params.update({item : self.jobs[section][item]})
+        else:
+          sched_params.update({item : None})
+ 
+      
+      self.sched.add_cron_job(self.send_msg,
+        year   = sched_params['year'], 
+        month  = sched_params['month'],
+        day    = sched_params['day'],
+        week   = sched_params['week'],
+        day_of_week = sched_params['day_of_week'],
+        hour   = sched_params['hour'],
+        minute = sched_params['minute'],
+        second = sched_params['second'],
+        args=(sched_params['module'],sched_params['action']))
 
-    #self.jobs  = ConfigBaseReader('config/jobs/').get_values()
-    #sched_params={}
-    #for section in self.jobs:
-    #  for item in self.jobs[section]:
-    #    if self.jobs[section][item] != '':
-    #      sched_params.update({item : self.jobs[section][item]})
-    #    else:
-    #      sched_params.update({item : None})
-    #    #self.logger.debug(sched_params)
-    #
-    #  self.sched.add_cron_job(lambda: self.send_msg(sched_params['module'],sched_params['action']),
-    #    year   = sched_params['year'], 
-    #    month  = sched_params['month'],
-    #    day    = sched_params['day'],
-    #    week   = sched_params['week'],
-    #    day_of_week = sched_params['day_of_week'],
-    #    hour   = sched_params['hour'],
-    #    minute = sched_params['minute'],
-    #    second = sched_params['second'])
-
-
-    #self.sched.add_cron_job(self.test,second='1,10,20')
-    #self.sched.add_cron_job(test,second='5,15,25')
-    #self.sched.start()
-    #self.logger.debug(self.sched.print_jobs())
+    
+    self.logger.debug(self.sched.print_jobs())
 
   # @TODO loading jobs from persistent store and create them in the scheduler
 
@@ -93,7 +92,17 @@ class Sched(Basemodule):
     print "Function to delete running and persistent jobs"
     pass
   
-  def send_msg(self, module, action):
-    self.logger.debug(module + ' & ' + action)
+  def send_msg(self, module, action):               # ########################################
+    if module in self.mod_list.keys():              # checking existence of requested module
+      rcpt = self.mod_list[module][0]               # setting receiving module from item file
+      mid = self.mod_list[module][1]                # setting module id from item file
+      msg = {                                       # creating queue message
+        'module_from':    'sched',                  # ########################################
+        'module_rcpt':    rcpt,
+        'module_addr':    mid,
+        'cmd':            action,
+        'opt_args':       ''
+      }                                                 
+      self.global_queue.put(msg)
 
 

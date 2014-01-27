@@ -10,7 +10,7 @@ type        = switch
 
 [Pumpe1]
 module_name = gpio
-module_addr = 0
+module_addr = 16
 type        = switch
 
 [Rest]
@@ -20,7 +20,7 @@ type        = switch
 
 [Pumpe2]
 module_name = gpio
-module_addr = 1
+module_addr = 15
 type        = switch
 
 [Scheduler]
