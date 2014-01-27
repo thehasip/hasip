@@ -161,12 +161,12 @@ class Gpio(Basemodule, Switch):
   def set_on(self, port, sender):
     
     if self.ports[port]['mode'] == 'out':
-#     self.GPIO.setup(self.ports[port]['pin'], self.GPIO.OUT)
-#     self.GPIO.output(self.ports[port]['pin'], self.GPIO.HIGH)
+      #self.GPIO.setup(self.ports[port]['pin'], self.GPIO.OUT)
+      #self.GPIO.output(self.ports[port]['pin'], self.GPIO.HIGH)
       pass
     if self.ports[port]['mode'] == 'in':
-#      self.GPIO.setup(self.ports[port]['pin'], self.GPIO.IN)
-#      self.GPIO.setup(self.ports[port]['pin'], self.GPIO.HIGH)
+      #self.GPIO.setup(self.ports[port]['pin'], self.GPIO.IN)
+      #self.GPIO.setup(self.ports[port]['pin'], self.GPIO.HIGH)
       pass
     self.logger.debug("GPIO Port (" + str(port) + ") set to on")
     self.ports[port]['status'] = 'on'
@@ -181,12 +181,12 @@ class Gpio(Basemodule, Switch):
   def set_off(self, port, sender):
 
     if self.ports[port]['mode'] == 'out':
- #    self.GPIO.setup(self.ports[port]['pin'], self.GPIO.OUT)
- #    self.GPIO.output(self.ports[port]['pin'], self.GPIO.LOW)
+      #self.GPIO.setup(self.ports[port]['pin'], self.GPIO.OUT)
+      #self.GPIO.output(self.ports[port]['pin'], self.GPIO.LOW)
       pass
     if self.ports[port]['mode'] == 'in':
- #    self.GPIO.setup(self.ports[port]['pin'], self.GPIO.IN)
- #    self.GPIO.setup(self.ports[port]['pin'], self.GPIO.LOW)
+      #self.GPIO.setup(self.ports[port]['pin'], self.GPIO.IN)
+      #self.GPIO.setup(self.ports[port]['pin'], self.GPIO.LOW)
       pass
     self.logger.debug("GPIO Port (" + str(port) + ") set to off")
     self.ports[port]['status'] = 'off'

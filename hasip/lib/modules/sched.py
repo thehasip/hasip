@@ -103,7 +103,6 @@ class Sched(Basemodule):
         'cmd':            action,
         'opt_args':       ''
       }                                                 
-      self.global_queue.put(msg)     
-    #self.logger.debug(module + ' & ' + action)
+      self.global_queue.put(msg)
 
 
