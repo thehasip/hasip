@@ -66,7 +66,8 @@ class Hasip(object):
 
         global_queue_element = self.global_queue.get(True)                              # (1)
 
-        instance_queue_element = {                                                  # (2)
+        instance_queue_element = {
+          'module_from_port':  global_queue_element.get('module_from_port'),                                                  # (2)
           'module_from':  global_queue_element.get('module_from'),
           'module_rcpt':  global_queue_element.get('module_rcpt'),
           'module_addr':  global_queue_element.get('module_addr'),

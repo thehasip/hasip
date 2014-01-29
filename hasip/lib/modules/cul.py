@@ -57,21 +57,21 @@ class Cul(Basemodule):
     t.daemon = True
     t.start()
 
-
     while True:
+      instance_queue_element = self.instance_queue.get(True)
 
-        instance_queue_element = self.instance_queue.get(True)
+      _senderport = instance_queue_element.get("module_from_port")
+      _sender	     = instance_queue_element.get("module_from")
+      _port        = instance_queue_element.get("module_addr")
+      _action      = instance_queue_element.get("cmd")
+      _optargs    = instance_queue_element.get("opt_args")
 
-        _action = instance_queue_element.get("cmd")
-        _port   = instance_queue_element.get("module_addr")
-        _sender = instance_queue_element.get("module_from")
-
-        options = {
-          "set_on"    : self.set_on,
-          "set_off"   : self.set_off,
-          "get_status": self.get_status
-        }
-        options[_action](_port,_sender)
+      options = {
+        "set_on"    : self.set_on,
+        "set_off"   : self.set_off,
+        "get_status": self.get_status
+      }
+      options[_action](_sender, _senderport, _port, _optargs)
 
   # ################################################################################
   #
@@ -79,7 +79,7 @@ class Cul(Basemodule):
   #
   # ################################################################################
 
-  def set_on(self,port,sender):
+  def set_on(self, sender, senderport, port, optargs):
     if port != None:
       data=self.ports[port]['address']+'01' # get the FS20 address of module + FS20 command "on"
   #    self.sio.write(unicode(data+'\n'))   # write the command + address + escape sequence to buffer
@@ -89,7 +89,7 @@ class Cul(Basemodule):
     else:
       self.logger.error('Port "'+ str(port) + '" doesn\'t exist!')
 
-  def set_off(self,port,sender):
+  def set_off(self, sender, senderport, port, optargs):
     if port != None:
       data=self.ports[port]['address']+'00' # get the FS20 address of module + FS20 command "off"
   #    self.sio.write(unicode(data+'\n'))   # write the command + address + escape sequence to buffer
@@ -99,13 +99,14 @@ class Cul(Basemodule):
     else:
       self.logger.error('Port "'+ str(port) + '" doesn\'t exist!')
 
-  def get_status(self, port, sender):
+  def get_status(self, sender, senderport, port, optargs):
     if port != None and sender != None:
       args=str(self.ports[port]['status'])
       queue_msg = {
-        'module_from':  self.queue_identifier + str(port),
+        'module_from_port':  str(port),
+        'module_from':  self.queue_identifier,
         'module_rcpt':  sender,
-        'module_addr':    0,
+        'module_addr':  senderport,
         'cmd':          'reply',
         'opt_args':     args
       }
@@ -130,6 +131,7 @@ class Cul(Basemodule):
       rcpt = mod_list[module][0]               # setting receiving module from item file
       mid = mod_list[module][1]                # setting module id from item file
       msg = {                                       # creating queue message
+        'module_from_port': 0,
         'module_from':    'cul',                  # ########################################
         'module_rcpt':    rcpt,
         'module_addr':    mid,

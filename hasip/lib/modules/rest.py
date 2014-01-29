@@ -42,7 +42,8 @@ class Rest(Basemodule):
         rcpt = mod_list[module][0]               # setting receiving module from item file
         mid = mod_list[module][1]                # setting module id from item file
         msg = {                                  # creating queue message
-          'module_from':    'rest',              # ########################################
+          'module_from_port':  0,                # ########################################
+          'module_from':    'rest',
           'module_rcpt':    rcpt,
           'module_addr':    mid,
           'cmd':            action,
@@ -91,7 +92,13 @@ class Rest(Basemodule):
      
     while True:
       instance_queue_element = self.instance_queue.get(True)
-      self.reply_cache[instance_queue_element.get("module_from")] = instance_queue_element.get("opt_args") 
+      _senderport = instance_queue_element.get("module_from_port")
+      _sender	  = instance_queue_element.get("module_from")
+      _port       = instance_queue_element.get("module_addr")
+      _action     = instance_queue_element.get("cmd")
+      _optargs    = instance_queue_element.get("opt_args")
+
+      self.reply_cache[_sender+str(_senderport)] = _optargs 
      
   # ################################################################################
   #

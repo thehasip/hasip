@@ -19,9 +19,7 @@ class Sched(Basemodule):
     # "sched|port|command or action"
     #
 
-    self.path = os.path.join(os.path.join( os.getcwd() + "/tmp/dbfile"))
     self.logger = logging.getLogger('Hasip.sched')
-    self.logger.debug(self.path)
     self.sched = Scheduler()
     self.items  = ConfigItemReader()
     self.mod_list = self.items.get_items_dict()     # getting module list from item file
@@ -67,14 +65,17 @@ class Sched(Basemodule):
     while True:
       instance_queue_element = self.instance_queue.get(True)
 
-      _action = instance_queue_element.get("cmd")
-      _opt_args   = instance_queue_element.get("opt_args")
-
+      _senderport = instance_queue_element.get("module_from_port")
+      _sender	  = instance_queue_element.get("module_from")
+      _port       = instance_queue_element.get("module_addr")
+      _action     = instance_queue_element.get("cmd")
+      _optargs    = instance_queue_element.get("opt_args")
+      
       options = {
         "create"   : self.create,
         "delete"  : self.delete
       }
-      options[_action](_opt_args)
+      options[_action](_sender, _senderport, _port, _optargs)
 
   # ################################################################################
   #
@@ -82,12 +83,12 @@ class Sched(Basemodule):
   #
   # ################################################################################
 
-  def create(self, opt_args):
+  def create(self, sender, senderport, port, optargs):
     # @TODO
     print "Function to put jobs in the running scheduler job queue and store them persistent"
     pass
 
-  def delete(self, opt_args):
+  def delete(self, sender, senderport, port, optargs):
     # @TODO
     print "Function to delete running and persistent jobs"
     pass
@@ -97,7 +98,8 @@ class Sched(Basemodule):
       rcpt = self.mod_list[module][0]               # setting receiving module from item file
       mid = self.mod_list[module][1]                # setting module id from item file
       msg = {                                       # creating queue message
-        'module_from':    'sched',                  # ########################################
+        'module_from_port': 0,                      # ########################################
+        'module_from':    'sched',
         'module_rcpt':    rcpt,
         'module_addr':    mid,
         'cmd':            action,
