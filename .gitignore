@@ -8,3 +8,4 @@ tmp/
 *.swo
 *~
 
+.DS_Store
