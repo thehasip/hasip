@@ -15,8 +15,9 @@ class Hasip(object):
 
   def __init__(self):
 
-    self.config = ConfigBaseReader().get_values()
-    self.items  = ConfigItemReader()
+    self.config_items = ConfigItemReader()
+    self.config_hasip = ConfigBaseReader()
+
     self.global_queue = Queue.Queue()
 
     self.log = Log()
@@ -32,8 +33,14 @@ class Hasip(object):
     # (4) as params we give: "global_queue" and the previously created queue
     # (5) start "worker" of each module in background
     #
+
+    # list of 'modules' to start
+    modules_to_start =  []
+    modules_to_start += self.config_items.modules_items()
+    modules_to_start += self.config_hasip.modules_services()
+
     self.modules = {}
-    for module_name in self.items.get_module_list():
+    for module_name in modules_to_start:
       self.modules[module_name] = {}                                      # (1)
       self.modules[module_name]["instance_queue"] = Queue.Queue()         # (2)
       self.modules[module_name]["instance_object"] = eval(
@@ -59,10 +66,11 @@ class Hasip(object):
         # (4) put instance_queue_element which was generated before (2) to the
         #     instance_queue of module
 
-        global_queue_element = self.global_queue.get(True)                              # (1)
+        global_queue_element = self.global_queue.get(True) # (1)
 
+        # (2)
         instance_queue_element = {
-          'module_from_port':  global_queue_element.get('module_from_port'),                                                  # (2)
+          'module_from_port':  global_queue_element.get('module_from_port'),
           'module_from':  global_queue_element.get('module_from'),
           'module_rcpt':  global_queue_element.get('module_rcpt'),
           'module_addr':  global_queue_element.get('module_addr'),
@@ -70,7 +78,7 @@ class Hasip(object):
           'opt_args':     global_queue_element.get('opt_args')
         }
 
-        module_rcpt = instance_queue_element.get('module_rcpt')                     # (3)
+        module_rcpt = instance_queue_element.get('module_rcpt') # (3)
         self.logger.debug("Message from " + str(global_queue_element.get('module_from')) + " to " + str(global_queue_element.get('module_rcpt')) + " transmitted")
         self.modules[ module_rcpt ]["instance_queue"].put( instance_queue_element ) # (4)
 

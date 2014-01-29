@@ -47,7 +47,7 @@ class ConfigItemReader(ConfigReader):
     return self.items
 
   # return a uniq list with all used modules within the items.
-  def get_module_list(self):
+  def modules_items(self):
     module_list = []
 
     for item in self.items:
@@ -101,6 +101,26 @@ class ConfigBaseReader(ConfigReader):
 
   def get_values(self):
     return self.config_options
+
+
+  def modules_services(self):
+    """
+    Returns a list of modules which are responsible for the provided services.
+    Only modules which have the flag 'true' are returned.
+    """
+
+    service_list = []
+    services = self.config_options['services']
+
+    for service_key in services.keys():
+
+      # config: 'start_api_rest'; module_tame = 'rest';
+      if services[service_key] and service_key == 'start_api_rest':
+        service_list.append('rest')
+      # add additional services / module mappings here
+      # ...
+
+    return service_list
 
 
   def logfile_path(self):

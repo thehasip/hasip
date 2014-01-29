@@ -13,11 +13,6 @@ module_name = gpio
 module_addr = 16
 type        = switch
 
-[Rest]
-module_name = rest
-module_addr = 0
-type        = switch
-
 [Pumpe2]
 module_name = gpio
 module_addr = 15
