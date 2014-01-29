@@ -1,9 +1,8 @@
 ####################################
 # importing standard libraries
 ####################################
-import logging
-import time
-import os
+import logging, time, os, re
+from lib.base.general import ConfigBaseReader
 
 ####################################
 #5 loglevels are available. All messages from the modules can be either displayed on the
@@ -11,11 +10,21 @@ import os
 #debug, info, warn, error, critical
 ####################################
 class Log():
+
+  config_hasip = ConfigBaseReader()
   
-  def __init__(self, fname, clvl,flvl):
+  def __init__(self, fname = config_hasip.logfile_path(),
+                     clvl  = config_hasip.loglevel_console(),
+                     flvl  = config_hasip.loglevel_file()):
+
     self.clvl = eval('logging.'+clvl)
     self.flvl = eval('logging.'+flvl)
-    self.path = str(os.getcwd()) + fname
+
+    # absolut / relative
+    if re.match('^/', fname):
+      self.path = fname
+    else:
+      self.path = os.path.join(os.getcwd(), fname)
 
     self.logger = logging.getLogger('Hasip')
     self.loglvl = self.logger.setLevel(logging.DEBUG)

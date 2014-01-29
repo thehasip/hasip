@@ -101,3 +101,47 @@ class ConfigBaseReader(ConfigReader):
 
   def get_values(self):
     return self.config_options
+
+
+  def logfile_path(self):
+    """
+    Returns path to hasip logfile.
+
+    Returns:
+      - default value (log/hasip.log) if not set in configuration file
+      - or value from configuration file
+    """
+
+    if 'logfile' in self.config_options['main'].keys():
+      return self.config_options['main']['logfile']
+    else:
+      return 'log/hasip.log'
+
+
+  def loglevel_console(self):
+    """
+    Returns loglevel for console logging.
+
+    Returns:
+      - default value (0) if not set in configuration file
+      - or value from configuration file
+    """
+
+    if 'console_log_lvl' in self.config_options['main'].keys():
+      return self.config_options['main']['console_log_lvl']
+    else:
+      return 0 # NOTSET
+
+  def loglevel_file(self):
+    """
+    Returns loglevel for file logging.
+
+    Returns:
+      - default value (INFO) if not set in configuration file
+      - or value from configuration file
+    """
+
+    if 'logfile_log_lvl' in self.config_options['main'].keys():
+      return self.config_options['main']['logfile_log_lvl']
+    else:
+      return 'INFO'

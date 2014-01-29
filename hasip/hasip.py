@@ -19,12 +19,7 @@ class Hasip(object):
     self.items  = ConfigItemReader()
     self.global_queue = Queue.Queue()
 
-    # Creating base logger that catches all log files from modules with
-    # Paramters from the config file main section provided by the Config Base Reader
-    self.log = Log( self.config['main']['logfile'], self.config['main']['console_log_lvl'], self.config['main']['logfile_log_lvl'] )
-
-    # creating logger for main module
-    # creating log message with self.logger.logtype('Message')
+    self.log = Log()
     self.logger = logging.getLogger('Hasip.main')
 
     # dynamically creation of communication queues and instances of all used
