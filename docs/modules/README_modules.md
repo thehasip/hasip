@@ -1,7 +1,11 @@
 Available default modules
 ========================
 
-- **cmddemo**: Reffer to: [module_cmddemo.md](docs/modules/module_cmddemo.md)
+- **cmddemo**: Refer to: [module_cmddemo](docs/modules/module_cmddemo.md)
+- **cul**: Refer to: [module_cul](docs/modules/module_cul.md)
+- **gpio**: Refer to: [module_gpio](docs/modules/module_gpio.md)
+- **rest**: Refer to: [module_gpio](docs/modules/module_rest.md)
+- **sched**: Refer to: [module_sched](docs/modules/module_sched.md)
 
 Installation of modules
 =======================
