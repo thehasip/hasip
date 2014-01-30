@@ -1,7 +1,8 @@
-[main]
+################################################################################
+#                                       main                                   #
+################################################################################
 
-bindings          = "config/bindings/"
-items             = "config/items/"
+[main]
 
 # Logging options:
 #   You can specify Loglevels for console (STDOUT) and file individually.
@@ -14,32 +15,20 @@ logfile         = log/hasip.log
 console_log_lvl = DEBUG
 logfile_log_lvl = INFO
 
-master_instance   = true     # false: this instance is a slave.
-
-[master]
-master_adress =   "tcp://192.168.x.x:1234/"
-
 ################################################################################
-# Service section
-#
-# By changing the flags to true or false you can disable
-# or enable services  which are running on this host.
+#                                     service                                  #
 ################################################################################
+
 [services]
+
+# enable/disable with true/false
 start_api_rest = true
+
+################################################################################
+# additional sections
+################################################################################
 
 [rest]
 rest_service_ip   = localhost
 rest_service_port = 80
-debug             = False
-
-
-#
-# Types of "items":
-#
-# switch:
-#   on,off,status{run|stop|unknown}
-# serial:
-#   "string"
-#
-
+debug             = false

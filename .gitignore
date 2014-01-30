@@ -7,5 +7,9 @@ tmp/
 *.swp
 *.swo
 *~
-
+# ignore user configuration
+config/*.config
+config/jobs/*.config
+# other
 .DS_Store
+.python-version
