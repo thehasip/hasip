@@ -29,7 +29,15 @@ class Sched(Basemodule):
 
     self.sched.start()
 
-    self.jobs  = ConfigBaseReader('config/jobs/').get_values()
+    # read jobs configuration
+    self.config = ConfigBaseReader('config/jobs/')
+    if self.config.has_config_files(): # true
+      self.logger.info('Loading config files...')
+      self.jobs = self.config.get_values()
+    else:
+      self.logger.info('No config files present.')
+      self.jobs = []
+
     sched_params={}
     for section in self.jobs:
       for item in self.jobs[section]:
