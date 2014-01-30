@@ -17,6 +17,21 @@ class ConfigReader(object):
       ) 
     )
 
+  def has_config_files(self):
+    """
+    Returns true/false depending on existance of configuration files.
+
+    Returns:
+      True  - if config files exists
+      False - if there are no config files
+    """
+
+    if len(self.files) == 0:
+      return False
+    else:
+      return True
+
+
 # ################################################################################
 #
 # ################################################################################
@@ -75,7 +90,11 @@ class ConfigBaseReader(ConfigReader):
     super(ConfigBaseReader, self).__init__(conf_dir, '.config')
 
     self.config_options = {}
-    self.cfg.readfp( open(self.files[0]) )
+
+    try:
+      self.cfg.readfp( open(self.files[0]) )
+    except:
+      self.cfg.readfp( open('tmp/dummy.config', 'w+') )
 
     true_false = re.compile('^([Tt]rue|[Ff]alse)$')   # regular expression:
                                                       # true|false (with or without capital letter)
@@ -101,7 +120,6 @@ class ConfigBaseReader(ConfigReader):
 
   def get_values(self):
     return self.config_options
-
 
   def modules_services(self):
     """
