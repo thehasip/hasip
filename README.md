@@ -20,11 +20,11 @@ Getting started
 # Change to your working directory
 cd ~/YOUR_WORKSPACE_DIRECTORY
 # Clone the repository from your fork
-git clone git@git.morgenthaler.at:YOUR_USERNAME/hasip-base.git hasip-base
+git clone git@github.com:YOUR_USERNAME/hasip.git hasip
 # change to cloned fork
-cd hasip-base
+cd hasip
 # Adding the upstream to fetch the newest code
-git remote add upstream git@git.morgenthaler.at:fh_prj_ws1314/hasip-base.git
+git remote add upstream git@github.com:thehasip/hasip.git
 ```
 
 * You now have successful set up your initial project.
