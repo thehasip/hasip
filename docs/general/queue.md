@@ -23,19 +23,21 @@ The communication between the different modules is managed by putting a dictonar
 A single message has at least the following keys in the message dictonary:
 
     queue_msg = {
-        'module_from':  (String,lowercase),
-        'module_rcpt':  (String,lowercase),
-        'module_addr':  (Integer),
-        'cmd':          (String),
-        'opt_args':     (String, Dict, ... )
+        'module_from_port: (Integer),
+        'module_from':     (String,lowercase),
+        'module_rcpt':     (String,lowercase),
+        'module_addr':     (Integer),
+        'cmd':             (String),
+        'opt_args':        (String, Dict, ... )
     }
 
 Here is an example message to get the **status** of port **1** on the **cmddemo** module:
 
     queue_msg = {
-        'module_from':  '',
-        'module_rcpt':  'cmddemo',
-        'module_addr':  1, 
-        'cmd':          'status',
-        'opt_args':     ''
+        'module_from_port: 5,
+        'module_from':     '',
+        'module_rcpt':     'cmddemo',
+        'module_addr':     1, 
+        'cmd':             'status',
+        'opt_args':        ''
     }
