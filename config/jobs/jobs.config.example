@@ -1,4 +1,4 @@
-[Lampe1 an]
+[Pumpe1 an]
 module      = Pumpe1
 action      = set_on
 year        = 
@@ -10,7 +10,7 @@ hour        =
 minute      = 
 second      = 0,20,40
 
-[Lampe1 aus]
+[Pumpe1 aus]
 module      = Pumpe1
 action      = set_off
 year        = 
