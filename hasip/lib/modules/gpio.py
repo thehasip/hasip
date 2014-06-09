@@ -165,12 +165,12 @@ class Gpio(Basemodule, Switch):
   def set_on(self, sender, senderport, port, optargs):
     
     if self.ports[port]['mode'] == 'out':
-      self.GPIO.setup(self.ports[port]['pin'], self.GPIO.OUT)
-      self.GPIO.output(self.ports[port]['pin'], self.GPIO.HIGH)
+      #self.GPIO.setup(self.ports[port]['pin'], self.GPIO.OUT)
+      #self.GPIO.output(self.ports[port]['pin'], self.GPIO.HIGH)
       pass
     if self.ports[port]['mode'] == 'in':
-      self.GPIO.setup(self.ports[port]['pin'], self.GPIO.IN)
-      self.GPIO.setup(self.ports[port]['pin'], self.GPIO.HIGH)
+      #self.GPIO.setup(self.ports[port]['pin'], self.GPIO.IN)
+      #self.GPIO.setup(self.ports[port]['pin'], self.GPIO.HIGH)
       pass
     self.logger.debug("GPIO Port (" + str(port) + ") set to on")
     self.ports[port]['status'] = 'on'
